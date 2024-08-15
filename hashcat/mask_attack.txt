@@ -1,0 +1,42 @@
+Mask attack:
+
+
+---Definition----
+
+used to generate words matching a specific pattern (useful when password length or format is known).
+
+placeholder --- meaning
+
+?l	lower-case ASCII letters (a-z)
+?u	upper-case ASCII letters (A-Z)
+?d	digits (0-9)
+?h	0123456789abcdef
+?H	0123456789ABCDEF
+?s	special characters («space»!"#$%&'()*+,-./:;<=>?@[]^_`{
+?a	?l?u?d?s
+?b	0x00 - 0xff
+
+
+
+-----Examples----
+
+---Example scenario (1) :
+
+In a machine i needed to find the hash for the following abeb6f8eb5722b8ca3b45f6f72a0cf17c7028d62a15a30199347d9d74f39023f
+but i knew that the password format was going to be "susan_nasus_" + "random number between 1 - 1 .000 .000"
+
+i used the following command hashcat -m 1400 -a 6 hash wl ?d?d?d?d?d?d?d?d?d 
+
+-m 1400 : specifies the hash type sha-256
+-a 6 : specifies attck mode (a combinator attack) 
+-wl wordlist that contained the prefix needed
+-?d?d?d?d?d?d?d?d?d (the mask representing the all combinations of 9 digits) 
+
+
+
+
+
+
+
+
+
