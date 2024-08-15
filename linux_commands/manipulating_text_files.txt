@@ -1,0 +1,9 @@
+//prints first column in a file 
+
+awk '{print $1}' filename.txt
+
+
+//prints everything until the '/' part
+
+awk '{split($1, a, "/"); print a[1]}' filename.txt
+
