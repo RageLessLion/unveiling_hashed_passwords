@@ -1,0 +1,11 @@
+A DNS zone transfer is the process of copying contents of a DNS zone file from one DNS server to another.
+
+AXFR -> full zone transfer (used when secondary server needs to completely sync with primary server)
+
+IXFR -> incremental ( transfers only the changes : additions , deletions and modifications since the last change)
+
+Security risks : potential access to IP addresses , network structure , services , etc..
+
+Preventing : Restrict zone transfers to specific IP addresses + use TSIG (Transaction signature)
+
+COMMAND ------->>>>>> dig @IP axfr domain_name

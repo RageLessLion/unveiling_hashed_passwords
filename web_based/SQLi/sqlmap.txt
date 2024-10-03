@@ -1,0 +1,17 @@
+
+
+Key Features of SQLMap:
+
+    Database Fingerprinting: Identifies the type and version of the database.
+    Data Extraction: Retrieves data such as tables, columns, and even the contents of the database.
+    Privilege Escalation: Identifies and exploits different levels of database privileges.
+    File System Access: Reads and writes files on the database server’s file system.
+    Remote Command Execution: Executes commands on the operating system when possible.
+
+
+
+COMMANDS ---->>>>>
+
+simple case:
+
+sqlmap -u http://hostname/ajax.php?action=login --data="username=abc&password=abc" -p username --batch
