@@ -1,0 +1,67 @@
+
+Usual usage --->>>
+
+Usual scan --> nmap -T4 -A -v IP_ADDR ( usually used for "aggresive scanning" with low timing and verbose outputs ) 
+	+shows first 1000 ports and their services in good time
+	+displays each service and it's version
+	+activates NSE (nmap scripting engine for usual scripts , only the generic ones)
+	-can be usually detected by IPS , IDS , Firewalls ....
+		 
+
+A case usually met is when the probes being sent are blocked , and that is when the utilitary suggests using the flag -Pn (this usually solves the issue , but when it does not
+we use evasion techniques). When doing a deep pen test it is recommended to look through all possible 65 535 ports(using the -p- flag) , this scan usually takes more time.(look for possible UDP usage
+on some ports).
+
+
+
+
+Firewalls , IDS , IPS evasion --->>>
+
+If a port is shown as filtered , it can be due to several cases :
+	1)the packets can be  dropped (in this case there is no response from the host)
+	2)the packets can be rejected -- returned with a RST flag -- having different ICMP errors(this gives birth to the following possibilities)		
+    Net Unreachable
+    Net Prohibited
+    Host Unreachable
+    Host Prohibited
+    Port Unreachable
+    Proto Unreachable
+
+
+
+
+	Firewall Evasion:
+
+	Nmap's TCP ACK scan (-sA) method is much harder to filter for firewalls and IDS/IPS systems than regular SYN (-sS)
+ or Connect scans (sT) because they only send a TCP packet with only the ACK flag.
+ When a port is closed or open, the host must respond with an RST flag.
+ Unlike outgoing connections, all connection attempts (with the SYN flag) from external networks are usually blocked by firewalls.
+ However, the packets with the ACK flag are often passed by the firewall because the firewall cannot determine whether
+ the connection was first established from the external network or the internal network.
+
+	IPS/IDS:
+	
+	Unlike firewalls and their rules, the detection of IDS/IPS systems is much more difficult because these are passive traffic monitoring systems.
+	 IDS systems examine all connections between hosts. If the IDS finds packets
+	 containing the defined contents or specifications, the administrator is notified and takes appropriate action in the worst case.
+
+	IPS systems take measures configured by the administrator independently to prevent potential attacks automatically. It is essential to know that IDS and IPS are different applications and that IPS serves as a complement to IDS.
+	Decoy scanning method (-D) is the right choice. With this method, Nmap generates various random IP addresses inserted into the IP header to disguise the origin of the packet sent. With this method, we can generate random (RND) a specific number (for example: 5) of IP addresses separated by a colon (:).
+	Our real IP address is then randomly placed between the generated IP addresses
+	
+	Example : sudo nmap 10.129.2.28 -p 21,22,25 -sA -Pn -n --disable-arp-ping --packet-trace
+	
+
+	10.129.2.28 	Scans the specified target.
+-p 80 	Scans only the specified ports.
+-sS 	Performs SYN scan on specified ports.
+-Pn 	Disables ICMP Echo requests.
+-n 	Disables DNS resolution.
+--disable-arp-ping 	Disables ARP ping.
+--packet-trace 	Shows all packets sent and received.
+-D RND:5 	Generates five random IP addresses that indicates the source IP the connection comes from.
+
+
+//TODO:
+
+I am going to display 3 cases for nmap to make the usage cases more understandable(scenarios are provided by HTB academy)  

@@ -1,3 +1,16 @@
+OBSERVATIONS:!!!
+
+When using sqlmap , only providing the url of the website or the url of the request , in most cases is not enough.
+Try using either:
+1)recording the request that you suspect is injectable in a .req file(done with burp suite) and feeding it to sqlmap
+2)specify the --data paramater
+.
+.
+Overall specificity is key when using a tool like this one 
+
+
+
+
 
 
 Key Features of SQLMap:
