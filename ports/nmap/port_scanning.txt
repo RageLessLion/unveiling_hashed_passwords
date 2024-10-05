@@ -1,78 +1,96 @@
 
 
-Nmap sends specially crafted probes (packets) to the target system and analyzes the responses to deduce various characteristics such as the operating system, services, and more.
+Nmap sends specially crafted probes (packets) to the target system and analyzes the responses to deduce various characteristics such as the operating system, services (what do services mean?), and more.
 
 
 
-My Usual scan --> nmap -T4 -A -v IP_ADDR ( usually used for "aggresive scanning" with low timing and verbose outputs ) 
-	+shows first 1000 ports and their services in good time
+My Usual scan --> nmap -T4 -A -v IP_ADDR (often used for "aggresive scanning" (define aggressive scanning please) with low timing [low timing as in a fast response from the scan? can you give an estimate] and verbose outputs) 
+	+shows first 1000 ports and their services in good time (what does good time mean? it s subjective, maybe give O(ms) or something)
 	+displays each service and it's version
-	+activates NSE (nmap scripting engine for usual scripts , only the generic ones)
-	-can sometimes be  detected by IPS , IDS , Firewalls ....
+	+activates NSE (nmap scripting engine for usual scripts , only the generic ones) (what is nmap scripting? what are usual scripts? scripts that you write yourself? can you give an example or link to one)(what does "only the generic ones" mean? what is a generic script? what characteristics does it have?)
+	-can sometimes be  detected and blocked by IPS, IDS or Firewalls (maybe also mention that it's illegal in some states:))) ....
 		 
+A case usually met is when the probes being sent are blocked, and that is when the utilitary suggests using the flag -Pn 
+(explain what the flag does briefly and how it bypasses the blocking). This generally solves the issue, but for the cases in which it doesn't,
+we use evasion techniques. When doing a deep pen (what is a deep pen test) test, it is recommended to scan through all possible 65 535 ports
+(using the -p- flag), which consequently takes more time. When scaning the ports, look for possible UDP usage (why should we look for that? how will we use that information?). 
 
-A case usually met is when the probes being sent are blocked , and that is when the utilitary suggests using the flag -Pn (this usually solves the issue , but when it does not
-we use evasion techniques). When doing a deep pen test it is recommended to look through all possible 65 535 ports(using the -p- flag) , this scan usually takes more time.(look for possible UDP usage
-on some ports). All in all the command from above works 90% percent of the time . What i have written below is theory and neccesary in the other 10% where some "fine tuning is needed". 
+Alternatively, some of the other commands I find helpful are:
+1)nmap -sC -T4 -v <target> (instead of -A [explain what -A and -sC flag means, as if someone doesn't know how to run the "help" command themselves:))]
+use -sC to run default Nmap scripts (again, give brief explanation on what "default scripts" are and do; above or here,
+no need to repeat the info in two places) -- less aggressive (same as before, define aggressive))
+2)nmap -T4 -v --script vuln <target> (useful when doinf vuln scanning; vuln as in vulnerabilitiee? can you give examples of what those are
+(e.g. ports that are listening for packages without protection, etc.)?)
+3)nmap -T4 -A -v -Pn <target> (explained above, disables ICMP echo requests [what is not explained above is, what are ICMP exho requests])
 
-
-
-
-
-Before going into "theory" i would like to present some alternatives to the command presented above in case it does not work :
-
-1)nmap -sC -T4 -v <target> (instead of -A use -sC to run default Nmap scripts -- less aggressive)
-2)nmap -T4 -v --script vuln <target> (useful when doinf vuln scanning)
-3)nmap -T4 -A -v -Pn <target> (explained above , disables ICMP echo requests)
-
-
-
+The commands from above should work 90% of the time. Bellow, you will find some theory and commands neccesary for the other 10% of the time,
+where some "fine tuning" is needed.
 
 
+Firewalls, IDS, IPS evasion --->>>
 
-Firewalls , IDS , IPS evasion --->>>
-
-If a port is shown as filtered , it can be due to several cases :
-	1)the packets can be  dropped (in this case there is no response from the host)
-	2)the packets can be rejected -- returned with a RST flag -- having different ICMP errors(this gives birth to the following possibilities)		
+If a port is shown as filtered, it can be due to several reasons:
+	1) the packets are dropped (in this case there is no response from the host)
+	2) the packets are rejected, then returned attached with a RST flag and different ICMP errors:		
     Net Unreachable
     Net Prohibited
     Host Unreachable
     Host Prohibited
     Port Unreachable
     Proto Unreachable
+ (maybe explain briefly what each means?)
 
 
-
-
+	Firewall:
+	explain what it is and how it works briefly, like you did with IPS and IDS bellow
+	
 	Firewall Evasion:
 
 	Nmap's TCP ACK scan (-sA) method is much harder to filter for firewalls and IDS/IPS systems than regular SYN (-sS)
- or Connect scans (sT) because they only send a TCP packet with only the ACK flag.
- When a port is closed or open, the host must respond with an RST flag.
- Unlike outgoing connections, all connection attempts (with the SYN flag) from external networks are usually blocked by firewalls.
- However, the packets with the ACK flag are often passed by the firewall because the firewall cannot determine whether
- the connection was first established from the external network or the internal network.
+	or Connect scans (sT) because they only send a TCP packet with only the ACK flag.
+	When a port is closed or open, the host must respond with an RST flag.
+	Unlike outgoing connections, all connection attempts (with the SYN flag) from external networks are usually blocked by firewalls.
+	However, the packets with the ACK flag are often passed by the firewall because the firewall cannot determine whether
+	the connection was first established from the external network or the internal network.
+
 
 	IPS/IDS:
 	
-	Unlike firewalls and their rules, the detection of IDS/IPS systems is much more difficult because these are passive traffic monitoring systems.
-	 IDS systems examine all connections between hosts. If the IDS finds packets
-	 containing the defined contents or specifications, the administrator is notified and takes appropriate action in the worst case.
-
-	IPS systems take measures configured by the administrator independently to prevent potential attacks automatically. It is essential to know that IDS and IPS are different applications and that IPS serves as a complement to IDS.
-	Decoy scanning method (-D) is the right choice. With this method, Nmap generates various random IP addresses inserted into the IP header to disguise the origin of the packet sent. With this method, we can generate random (RND) a specific number (for example: 5) of IP addresses separated by a colon (:).
-	Our real IP address is then randomly placed between the generated IP addresses
+	Unlike firewalls rules, IDS/IPS systems use more advanced detection and filtering techniques via passive traffic monitoring systems.
 	
-	Example : sudo nmap 10.129.2.28 -p 21,22,25 -sA -Pn -n --disable-arp-ping --packet-trace
+	IDS systems examine all connections between hosts. If the IDS finds packets
+	containing the defined (defined by who, where and how?) contents or specifications, the administrator is notified and takes
+	appropriate action in the worst case.
+	I dont. understand what you mean here? So the IDS has a blacklist of terms and if it finds anything from it in a package then
+	the administrator is notified to take action and presumably, the packages get dropped or will the perpetrator get notified as
+	soon as the IDS detects it?
+
+	IPS systems take measures configured by the administrator independently (don't IDS have administrators with independent rules too?
+	from this sentence it sounds as if only IPSs do, which i don t think it s true) to prevent potential attacks automatically (what does automatically mean?).
+	It is essential to know that IDS and IPS are different applications and complement each other on the X layer of the network stack
+	(can you mention what layer of the stack they work on).
+	
+	IPS/IDS Evasion:
+
+	To evade IPS/IDS filters we can use a method known as "decoy scanning" (-D). With this method, Nmap generates various random IP
+	addresses and inserts them into the IP header to disguise the origin of the packet sent. Thus, we can randomly generate
+	(RND? why is this abreviation here? should it hint to something specific? is this a flag to be used in the command?, i appear so
+	based on the command bellow, but it s confusing for the viewer if plopped here without context I believe) 
+	a specific number (for example 5) of IP addresses separated by a colon (:).
+	Our real IP address is then randomly placed between the generated IP addresses.
+	
+	Example: sudo nmap 10.129.2.28 -p 21,22,25 -sA -Pn -n --disable-arp-ping --packet-trace
 	
 
-	10.129.2.28 	Scans the specified target.
--p 80 	Scans only the specified ports.
--sS 	Performs SYN scan on specified ports.
--Pn 	Disables ICMP Echo requests.
--n 	Disables DNS resolution.
---disable-arp-ping 	Disables ARP ping.
---packet-trace 	Shows all packets sent and received.
--D RND:5 	Generates five random IP addresses that indicates the source IP the connection comes from.
-  
+	10.129.2.28 		Scans the specified target.
+	-p 21,22,25 		Scans only the specified ports.
+	-sS 				Performs SYN scan on specified ports. (you actually don t use this in the command above:)) typo i think)
+	-Pn 				Disables ICMP Echo requests.
+	-n 					Disables DNS resolution. (explain briefly what that is and why you want to disable it)
+	--disable-arp-ping 	Disables ARP ping.		 (same as above)
+	--packet-trace 		Shows all packets sent and received.
+	-D RND:5 			Generates five random IP addresses that indicates the source IP the connection comes from.
+						(you don t use this in the command you pasted, typo again maybe?)
+
+	I like how you broke down the arguments and flags for the command, maybe you should do that also for the commands above, 
+	expecially when you introduce a new flag. It's clearer what the command does.
