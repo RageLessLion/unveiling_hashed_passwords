@@ -1,16 +1,31 @@
 
-Usual usage --->>>
 
-Usual scan --> nmap -T4 -A -v IP_ADDR ( usually used for "aggresive scanning" with low timing and verbose outputs ) 
+Nmap sends specially crafted probes (packets) to the target system and analyzes the responses to deduce various characteristics such as the operating system, services, and more.
+
+
+
+My Usual scan --> nmap -T4 -A -v IP_ADDR ( usually used for "aggresive scanning" with low timing and verbose outputs ) 
 	+shows first 1000 ports and their services in good time
 	+displays each service and it's version
 	+activates NSE (nmap scripting engine for usual scripts , only the generic ones)
-	-can be usually detected by IPS , IDS , Firewalls ....
+	-can sometimes be  detected by IPS , IDS , Firewalls ....
 		 
 
 A case usually met is when the probes being sent are blocked , and that is when the utilitary suggests using the flag -Pn (this usually solves the issue , but when it does not
 we use evasion techniques). When doing a deep pen test it is recommended to look through all possible 65 535 ports(using the -p- flag) , this scan usually takes more time.(look for possible UDP usage
-on some ports).
+on some ports). All in all the command from above works 90% percent of the time . What i have written below is theory and neccesary in the other 10% where some "fine tuning is needed". 
+
+
+
+
+
+Before going into "theory" i would like to present some alternatives to the command presented above in case it does not work :
+
+1)nmap -sC -T4 -v <target> (instead of -A use -sC to run default Nmap scripts -- less aggressive)
+2)nmap -T4 -v --script vuln <target> (useful when doinf vuln scanning)
+3)nmap -T4 -A -v -Pn <target> (explained above , disables ICMP echo requests)
+
+
 
 
 
@@ -60,8 +75,4 @@ If a port is shown as filtered , it can be due to several cases :
 --disable-arp-ping 	Disables ARP ping.
 --packet-trace 	Shows all packets sent and received.
 -D RND:5 	Generates five random IP addresses that indicates the source IP the connection comes from.
-
-
-//TODO:
-
-I am going to display 3 cases for nmap to make the usage cases more understandable(scenarios are provided by HTB academy)  
+  
