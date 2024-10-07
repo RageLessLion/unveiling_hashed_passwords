@@ -1,0 +1,16 @@
+When you gain a reverse shell (e.g., through netcat), it is often a very limited shell where the input/output may not behave as expected. You may not be able to use features like arrow keys,
+ tab completion, or even control signals like Ctrl+C.
+
+
+
+When getting a reverse shell , i recommend doing the following :
+
+-- python3 -c 'import pty;pty.spawn("/bin/bash")' (upgrades to a fully interactive shell)
+
+If the reverse shell is gained through a nc listener , stop that process using ctrl + z , and use the following command :
+
+-- stty raw -echo;fg ( stty raw -echo is useful when you need unprocessed, direct interaction with a program or device, especially in cases where normal terminal settings interfere with input/output behavior.
+
+After being redirected back to the shell , i would suggest :
+
+-- export TERM=xterm (used for clearing the screen)
