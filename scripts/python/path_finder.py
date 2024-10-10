@@ -6,7 +6,7 @@ import logging
 from tqdm import tqdm
 
 # Set up logging
-logging.basicConfig(filename="dirbuster_errors.log", level=logging.ERROR)
+
 
 # Custom headers
 HEADERS = {"User-Agent": "Mozilla/5.0 (compatible; DirBuster/1.0)"}
