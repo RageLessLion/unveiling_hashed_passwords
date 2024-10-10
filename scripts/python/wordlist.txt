@@ -1,0 +1,10 @@
+/home
+/usr
+/bin
+/var
+/tmp
+/etc
+/opt
+/srv
+/mnt
+/dev
