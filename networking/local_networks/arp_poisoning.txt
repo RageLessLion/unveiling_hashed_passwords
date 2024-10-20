@@ -1,0 +1,20 @@
+In this section i am going to explain arp poisoning step by step , using mininet (a utilitary that creates a realistic virtual 
+network  , running a kernel , switch and application code).ARP(address resolution protocol)  is a network protocol used to map an IP address (a logical address) to a physical machine address (also known as a MAC address) that is recognized in the local network. It operates at the link layer (Layer 2) of the OSI model,
+ enabling communication between devices on a local area network (LAN). 
+
+
+First of all create a 3 device topology using the following command : sudo mn --top single,3 (this will create a topology that includes 3 hosts , connected to a switch)
+
+When creating a new topology the arp associations do not exist . Using ping among all the hosts will populate th entries . 
+For example , if you want h1 (host 1) to intercept traffic between h2 and h3 , you can use the following command : arpspoof -i h1-eth0 10.0.0.2 10.0.0.3 
+
+h1-eth0 -> is the interface used by host 1
+10.0.0.2 -> is the ip address of host 2
+10.0.0.3 -> is the ip address of host 3
+
+Before using the arpspoof command you can check the arp entries for h2 (you will see the mac addresses associated with the right ip for host 3) (arp -a output is specific to every device on the network)
+
+After using the command , you will see that the mac address of h1 is associated with the ip of host3 . 
+
+Suggestion : In order to not disturb traffic between h2 and h3 (not being detected) i suggest using ip forwarding(on h1 CLI) : sysctl -w net.ipv4.ip_forward-=1 
+
