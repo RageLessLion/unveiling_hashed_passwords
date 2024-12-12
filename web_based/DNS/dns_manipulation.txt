@@ -1,0 +1,23 @@
+DNS records (aka zone files)
+
+->provide information about a domain (including what ip adddress is associated + how to handle requests)
+
+->TTL present (how often a DNS server will refresh that record)
+
+Types of Records ( Most common ) :
+
+->A: holds the IPV4 address of the domain
+
+->AAAA: conatins the IPV6 address for the domain 
+
+->CNAME: forwards one domain or subdomain to another domain (DOES NOT provide an IP address)
+
+->TXT: lets an admin store text notes in the record
+
+->MX: directs mail to an email server
+
+->SOA: stores admin information about the domain
+
+->SRV: specifies a port for specific services
+
+->PTR: provides a domain in name in reverse look ups 
