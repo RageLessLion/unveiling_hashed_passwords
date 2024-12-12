@@ -1,0 +1,19 @@
+WPS (wi-fi protected setup) is a functionality built into many wireless routers . Creating a WPA password <=> PSK(pre shared key) and inputting all WI-Fi clients
+is tedious . Implementing WPS found in routers allows users to enter a simle 8 digit code instead of the actual WI-FI password .
+
+Assuming WPS protocol checks all the eight digits for correctness, that means an attacker would require 108 or 100 million possible combinations to brute force the PIN
+Let’s assume that an intruder could guess the PIN at the rate of 1 PIN per second, considering there is a delay waiting for the router to examine the input and respond. In this case, the attacker would take 1,157.4 days to try all the possible combinations. Even if the intruder succeeds in cracking the PIN in roughly half the time (578 days),
+that would not be a viable attack vector.  
+
+Reasons why WPS PIN is so weak :
+
+1)the last digit of the 8 is just a check digit calculated from the previous seven (this reduces the possible combinations to 10^7 (10 million)
+
+2)Instead of verifying the number in whole, it checks the first four digits, and only if the four are right does the protocol check the last three. This approach presents a considerable weakness in what would otherwise be a strong key. It means that if an intruder is brute-forcing the WPS PIN, they do not need to try all the seven-digit codes from 0000000 – 9999999; instead, they need to
+ try the codes from 0000 – 9999, followed by the codes from 000 – 999. Therefore, instead of 107 choices, which translates to 10 million brute force attempts, WPS PINs only require 10^4 or 10,000 plus 10^3 or 1,000 guesses, making a total of merely 11,000 brute force attempts.
+
+Going by our analogy of 1 PIN per second, it would take less than three hours to guess all possible combinations for the first four digits and a meager 16 minutes to guess the choices in the second half. We have gone down from a total brute force time of 4 months to 3 hours to try all possible combinations in WPS, indicating how the WPS protocol is the weak link in wireless network security.
+
+Usual attacks : Pixie Dust attack + known tools : reaver 
+
+

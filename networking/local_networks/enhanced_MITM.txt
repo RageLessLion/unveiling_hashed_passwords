@@ -1,0 +1,47 @@
+In a local network let's trick a station and serve dummy data instead of the one that has been requested from the internet.
+(act as the "so called target website") 
+
+This is the setup----
+
+Red station ->ip addr : 192.168.1.2/22
+	    ->mac addr : e6:61:6e:70:05:2a
+
+Green station ->ip addr : 192.168.2.2/22
+	      ->mac addr : aa:08:2a:e2:6e:bf
+
+Default gateway : 192.168.0.100
+
+Step 1.
+
+First inititiate the arp spoof , from the red station : arpspoof -i red-eth0 -t 192.168.2.2 192.168.0.100 -r
+
+--explanation
+a)-i red-eth0 : the interface used
+b)-t : target
+c)192.168.2.2 <-> 192.168.0.100 ( red station will start intercepting traffic between the specified machines)
+d)-r : repeat Resends the packet continuously with a delay given in seconds by the argument. A delay of zero means only one packet is sent.
+	
+That command will generate an output like this one -->>
+
+e6:61:6e:70:5:2a aa:8:2a:e2:6e:bf 0806 42: arp reply 192.168.0.100 is-at e6:61:6e:70:5:2a
+e6:61:6e:70:5:2a 8a:24:35:ad:fd:a2 0806 42: arp reply 192.168.2.2 is-at e6:61:6e:70:5:2a
+
+--explanation
+When replying to arp call , the red machine assumes an ip which is not it's . (it associates it's mac address with the ip of the other machines)
+Now red machine can be viewed as a "proxy" between the green station and the defualt gateway(the router) . So in other words , the red machine
+intercepts any internet traffic the green machine might have. 
+
+Step 2.
+
+Now that the red station intercepts the traffic , it needs to respond properly to the dns requests . 
+Here is where dns spoofing comes into play . Create a hosts file on the red machine , and add it's ip address(192.168.1.2)
+associated with the target website something like :
+
+----
+cat hosts
+192.168.1.2	examplewebsite.com
+----
+
+Now with sudo privileges run the following on the red machine : dnsspoof -f hosts
+
+Ending : If you followed all the steps like specified , when accesing "examplewebsite.com" from the green machine , the apache server page from the red machnine config should be displayed.
